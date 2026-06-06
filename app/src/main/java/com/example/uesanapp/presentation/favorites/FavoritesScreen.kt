@@ -1,4 +1,4 @@
-package com.example.uesanapp.presentation.home
+package com.example.uesanapp.presentation.favorites
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,11 +21,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uesanapp.presentation.common.CountryCard
 
 @Composable
-fun HomeScreen(
-    viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
+fun FavoritesScreen(
+    viewModel: FavoritesViewModel = viewModel(factory = FavoritesViewModel.Factory)
 ) {
-    val countries by viewModel.countries.collectAsStateWithLifecycle()
-    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+    val favorites by viewModel.favorites.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -35,19 +33,22 @@ fun HomeScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Ranking FIFA 2026", style = MaterialTheme.typography.titleLarge)
+        Text("Mis Favoritos", style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.height(8.dp))
 
-        if (isLoading) {
+        if (favorites.isEmpty()) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator()
+                Text(
+                    "Aún no tienes favoritos",
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         } else {
             LazyColumn {
-                items(countries, key = { it.id }) { country ->
+                items(favorites, key = { it.id }) { country ->
                     CountryCard(
                         country = country,
                         onToggleFavorite = { viewModel.toggleFavorite(country.id) }
